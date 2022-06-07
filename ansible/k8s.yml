@@ -1,0 +1,32 @@
+---
+- name: Install k8s by microk8s
+  hosts: vms
+  remote_user: ubuntu
+  become: true
+
+  tasks:
+    - name: Add admin user to microk8s group
+      user:
+        name: "{{ansible_ssh_user}}"
+        groups: microk8s
+        append: yes
+
+    - name: Install k8s
+      snap:
+        name: microk8s
+        classic: yes
+    
+    - name: Enable microk8s services
+      command: "microk8s enable {{item}}"
+      with_items: 
+      - dns
+      - ingress
+  
+
+    - name: Enable kubectl autocompletion
+      ansible.builtin.shell:
+        cmd: kubectl completion bash > /etc/bash_completion.d/kubectl
+        creates: /etc/bash_completion.d/kubectl
+    
+
+    

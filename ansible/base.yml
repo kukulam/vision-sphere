@@ -1,0 +1,15 @@
+---
+- name: Basic config
+  hosts: vms
+  remote_user: ubuntu
+  become: true
+  
+  tasks:
+    - name: Install base dependencies
+      ansible.builtin.apt:
+        name:
+          - snapd 
+          - python3-pip
+          - jq 
+        state: present
+        update_cache: yes
